@@ -42,8 +42,6 @@ class Room {
   }
   //para todas las habitaciones ingresadas, aplica la funcion anterior y devuelve el porcentaje promedio de ocupacion?
   static totalOccupancyPercentage(rooms, startDate, endDate) {
-    // const formatStartDate = new Date(startDate).getTime();
-    // const formatEndDate = new Date(endDate).getTime();
     const occupancyArr = rooms.map((room) =>
       room.occupancyPercentage(startDate, endDate)
     );
@@ -68,7 +66,14 @@ class Booking {
     this.discount = discount;
     this.room = room;
   }
-  getFee() {}
+  getFee() {
+    const formatCheckIn = new Date(this.checkIn).getTime();
+    const formatCheckOut = new Date(this.checkOut).getTime();
+    const totalDays = (formatCheckOut - formatCheckIn) / (24 * 3600 * 1000);
+    const roomDailyPrice = this.room.rate * (1 - this.room.discount / 100);
+    const totalFee = roomDailyPrice * totalDays * (1 - this.discount / 100);
+    return totalFee;
+  }
 }
 
 module.exports = {
@@ -116,3 +121,12 @@ const room4 = new Room("AFR 420", bookingsTest, 500, 0);
 const room5 = new Room("AFR 160", bookingsTest, 500, 0);
 
 console.log(Room.availableRooms([room1, room3], "2023-04-19", "2023-04-23")); */
+
+/* function prueba(checkIn, checkOut) {
+  const formatCheckIn = new Date(checkIn).getTime();
+  const formatCheckOut = new Date(checkOut).getTime();
+  const totalDays = (formatCheckOut - formatCheckIn) / (24 * 3600 * 1000);
+  console.log(totalDays);
+}
+
+prueba("2023-04-23", "2023-04-27"); */

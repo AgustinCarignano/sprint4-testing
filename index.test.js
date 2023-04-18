@@ -2,33 +2,42 @@ const { Room, Booking } = require("./index");
 
 const bookingsTest = [
   {
-    fullName: "Krista Rothschild",
+    name: "Krista Rothschild",
     email: "krothschild0@360.cn",
     checkIn: "2023-04-19",
     checkOut: "2023-04-22",
+    discount: 15,
     room: {
       name: "AFR 170",
+      bookings: [],
       rate: 500,
+      discount: 15,
     },
   },
   {
-    fullName: "Krista Rothschild",
+    name: "Krista Rothschild",
     email: "krothschild0@360.cn",
     checkIn: "2023-04-20",
     checkOut: "2023-04-30",
+    discount: 0,
     room: {
       name: "AFR 250",
+      bookings: [],
       rate: 500,
+      discount: 0,
     },
   },
   {
-    fullName: "Krista Rothschild",
+    name: "Krista Rothschild",
     email: "krothschild0@360.cn",
     checkIn: "2023-04-15",
     checkOut: "2023-04-17",
+    discount: 5,
     room: {
       name: "AFR 380",
+      bookings: [],
       rate: 500,
+      discount: 5,
     },
   },
 ];
@@ -42,22 +51,18 @@ describe("Constructor method of room object", () => {
       discount: 10,
     };
     const room = new Room("room name", [], 300, 10);
-    const actualVaclue = {
+    const actualValue = {
       name: room.name,
       bookings: room.bookings,
       rate: room.rate,
       discount: room.discount,
     };
-    expect(actualVaclue).toEqual(expectedValue);
+    expect(actualValue).toEqual(expectedValue);
   });
   test("Discount value is 0 when no one value is passed", () => {
     const room = new Room("room name", [], 300);
     expect(room.discount).toBe(0);
   });
-  /* test("Obtain an error when an argument diferent a discount is missing", () => {
-    const room = new Room("room name", []);
-    expect(room).toThrow("There is arguments missings");
-  }); */
 });
 
 describe("isOcuppied method of room object", () => {
@@ -94,7 +99,7 @@ describe("ocuppancyPercentage method of room object", () => {
   });
 });
 
-describe("totalOccupancyPercentage static method", () => {
+describe("totalOccupancyPercentage static method of Room class", () => {
   test("Returns 100% when all rooms passed have 100% of occupancy", () => {
     const room1 = new Room("AFR 170", bookingsTest, 500, 0);
     const room2 = new Room("AFR 250", bookingsTest, 500, 0);
@@ -130,7 +135,7 @@ describe("totalOccupancyPercentage static method", () => {
   });
 });
 
-describe("availableRooms static method", () => {
+describe("availableRooms static method of Room class", () => {
   test("return all rooms from the passed array if their occupancy is 0%", () => {
     const room1 = new Room("AFR 170", bookingsTest, 500, 0);
     const room2 = new Room("AFR 250", bookingsTest, 500, 0);
@@ -160,5 +165,82 @@ describe("availableRooms static method", () => {
     expect(
       Room.availableRooms([room1, room2], "2023-04-19", "2023-04-23")
     ).toEqual([room1, room2]);
+  });
+});
+
+describe("Constructor method of booking", () => {
+  test("Values are assigned correctly", () => {
+    const room = new Room("AMR 023", bookingsTest, 350, 10);
+    const booking = new Booking(
+      "Jean Doe",
+      "JDoe@mail.com",
+      "2023-04-23",
+      "2023-04-28",
+      10,
+      room
+    );
+
+    const expectedValue = {
+      name: "Jean Doe",
+      email: "JDoe@mail.com",
+      checkIn: "2023-04-23",
+      checkOut: "2023-04-28",
+      discount: 10,
+      room: room,
+    };
+
+    expect(booking).toEqual(expectedValue);
+    expect(booking.room).toBeInstanceOf(Room);
+  });
+});
+
+describe("getFee method of booking objects", () => {
+  test("Returns 1000 when the room rate is 200 for five days and without discounts", () => {
+    const room = new Room("AMR 023", bookingsTest, 200);
+    const booking = new Booking(
+      "Jean Doe",
+      "JDoe@mail.com",
+      "2023-04-23",
+      "2023-04-28",
+      0,
+      room
+    );
+    expect(booking.getFee()).toBe(1000);
+  });
+  test("Returns 500 when the room rate is 200, its discount 50% and for a five days reservation without booking discount", () => {
+    const room = new Room("AMR 023", bookingsTest, 200, 50);
+    const booking = new Booking(
+      "Jean Doe",
+      "JDoe@mail.com",
+      "2023-04-23",
+      "2023-04-28",
+      0,
+      room
+    );
+    expect(booking.getFee()).toBe(500);
+  });
+  test("Returns 900 when the room rate is 200, its discount 0, for a five day reservation with a discount of 10%", () => {
+    const room = new Room("AMR 023", bookingsTest, 200);
+    const booking = new Booking(
+      "Jean Doe",
+      "JDoe@mail.com",
+      "2023-04-23",
+      "2023-04-28",
+      10,
+      room
+    );
+    expect(booking.getFee()).toBe(900);
+  });
+  test("Returns 720 when the room rate is 200, its discount 10%, for a five days reservation and with a booking discount of 20%", () => {
+    const room = new Room("AMR 023", bookingsTest, 200, 10);
+    const booking = new Booking(
+      "Jean Doe",
+      "JDoe@mail.com",
+      "2023-04-23",
+      "2023-04-28",
+      20,
+      room
+    );
+    expect(booking.getFee()).toBe(720);
   });
 });
