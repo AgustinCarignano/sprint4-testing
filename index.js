@@ -1,7 +1,5 @@
 class Room {
   constructor(name, bookings, rate, discount = 0) {
-    /* if (!name || !bookings || !rate)
-      throw new Error("There is arguments missings"); */
     this.name = name;
     this.bookings = bookings;
     this.rate = rate;
@@ -67,6 +65,8 @@ class Booking {
     this.room = room;
   }
   getFee() {
+    if (this.discount > 100 || this.discount < 0) return -1;
+    if (this.room.discount > 100 || this.room.discount < 0) return -1;
     const formatCheckIn = new Date(this.checkIn).getTime();
     const formatCheckOut = new Date(this.checkOut).getTime();
     const totalDays = (formatCheckOut - formatCheckIn) / (24 * 3600 * 1000);
@@ -80,53 +80,3 @@ module.exports = {
   Room,
   Booking,
 };
-
-/* const bookingsTest = [
-  {
-    fullName: "Krista Rothschild",
-    email: "krothschild0@360.cn",
-    checkIn: "2023-04-19",
-    checkOut: "2023-04-22",
-    room: {
-      name: "AFR 170",
-      rate: 500,
-    },
-  },
-  {
-    fullName: "Krista Rothschild",
-    email: "krothschild0@360.cn",
-    checkIn: "2023-04-20",
-    checkOut: "2023-04-30",
-    room: {
-      name: "AFR 250",
-      rate: 500,
-    },
-  },
-  {
-    fullName: "Krista Rothschild",
-    email: "krothschild0@360.cn",
-    checkIn: "2023-04-15",
-    checkOut: "2023-04-17",
-    room: {
-      name: "AFR 380",
-      rate: 500,
-    },
-  },
-];
-
-const room1 = new Room("AFR 170", bookingsTest, 500, 0);
-const room2 = new Room("AFR 250", bookingsTest, 500, 0);
-const room3 = new Room("AFR 380", bookingsTest, 500, 0);
-const room4 = new Room("AFR 420", bookingsTest, 500, 0);
-const room5 = new Room("AFR 160", bookingsTest, 500, 0);
-
-console.log(Room.availableRooms([room1, room3], "2023-04-19", "2023-04-23")); */
-
-/* function prueba(checkIn, checkOut) {
-  const formatCheckIn = new Date(checkIn).getTime();
-  const formatCheckOut = new Date(checkOut).getTime();
-  const totalDays = (formatCheckOut - formatCheckIn) / (24 * 3600 * 1000);
-  console.log(totalDays);
-}
-
-prueba("2023-04-23", "2023-04-27"); */
