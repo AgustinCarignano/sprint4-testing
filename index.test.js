@@ -1,4 +1,4 @@
-const { Room, Booking } = require("./index");
+const { Room, Booking } = require("./index.js");
 
 const bookingsTest = [
   {
